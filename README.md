@@ -10,6 +10,7 @@ Create a new queue in the AWS SQS (Simple Queue Service) console - "logstash-inp
 
 Create logstash-writer the policy below: Generate an Access Key and make a note of it, for clients.
 
+```
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -28,6 +29,7 @@ Create logstash-writer the policy below: Generate an Access Key and make a note 
     }
   ]
 }
+```
 
 ## Logstash Writer Layer ##
 
