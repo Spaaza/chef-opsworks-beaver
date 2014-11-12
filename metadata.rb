@@ -6,5 +6,5 @@ description      'Installs/Configures opsworks-beaver'
 long_description 'Installs/Configures opsworks-beaver'
 version          '0.1.0'
 
-depends python
-depends logrotate
+depends 'python'
+depends 'logrotate'
