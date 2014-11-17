@@ -92,10 +92,10 @@ node['beaver']['outputs'].each do |outs|
     case name
       when "sqs" then
         outputs << "sqs"
-        conf['sqs_aws_region'] = ['beaver']['sqs_aws_region']
-        conf['sqs_aws_queue'] = ['beaver']['sqs_aws_queue']
-        conf['sqs_aws_access_key'] = ['beaver']['sqs_aws_access_key']
-        conf['sqs_aws_secret_key'] = ['beaver']['sqs_aws_secret_key']
+        conf['sqs_aws_region'] = node['beaver']['sqs_aws_region']
+        conf['sqs_aws_queue'] = node['beaver']['sqs_aws_queue']
+        conf['sqs_aws_access_key'] = node['beaver']['sqs_aws_access_key']
+        conf['sqs_aws_secret_key'] = node['beaver']['sqs_aws_secret_key']
       else
         log("output type not supported: #{name}") { level :warn }
     end
