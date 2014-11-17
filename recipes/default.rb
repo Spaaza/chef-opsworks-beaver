@@ -160,11 +160,6 @@ if use_upstart
     provider Chef::Provider::Service::Upstart
   end
 else
-  service "beaver" do
-    supports :restart => true, :reload => false, :status => true
-    action [:enable, :start]
-  end
-
   template "/etc/init.d/beaver" do
     mode "0755"
     source "init-beaver.erb"
@@ -176,6 +171,11 @@ else
               :platform => node['platform']
               )
     notifies :restart, "service[beaver]"
+  end
+  
+  service "beaver" do
+    supports :restart => true, :reload => false, :status => true
+    action [:enable, :start]
   end
 end
 
