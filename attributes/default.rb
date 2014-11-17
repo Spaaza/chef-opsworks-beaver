@@ -4,6 +4,7 @@ default['beaver']['group'] = 'beaver'
 default['beaver']['join_groups'] = []
 default['beaver']['log_dir'] = '/var/log/beaver'
 default['beaver']['pid_dir'] = '/var/run/beaver'
+default['beaver']['pip_package'] = 'beaver==22'
 
 default['beaver']['sqs_aws_region'] = 'eu-west-1'
 default['beaver']['sqs_aws_queue'] = 'logstash-input'
