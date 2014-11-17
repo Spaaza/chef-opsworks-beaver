@@ -84,9 +84,6 @@ node['beaver']['inputs'].each do |ins|
   end
 end
 
-# From the commandline
-beaver -c /etc/beaver/conf -t sqs
-
 # outputs
 outputs = []
 conf = {}
