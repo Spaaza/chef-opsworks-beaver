@@ -122,71 +122,63 @@ template conf_file do
 end
 
 # use upstart when supported to get nice things like automatic respawns
-#use_upstart = false
-#supports_setuid = false
-#case node['platform_family']
-#when "rhel"
-#  if node['platform_version'].to_i >= 6
-#    use_upstart = true
-#  end
-#when "fedora"
-#  if node['platform_version'].to_i >= 9
-#    use_upstart = true
-#  end
-#when "ubuntu"
-#  use_upstart = true
-#  if node['platform_version'].to_f >= 12.04
-#    supports_setuid = true
-#  end
-#end
-
-use_upstart = true
+use_upstart = false
+supports_setuid = false
+case node['platform_family']
+when 'rhel'
+  use_upstart = true if node['platform_version'].to_i >= 6
+when 'fedora'
+  use_upstart = true if node['platform_version'].to_i >= 9
+when 'debian'
+  use_upstart = true
+  supports_setuid = true if node['platform_version'].to_f >= 12.04
+end
 
 if use_upstart
-  template "/etc/init/beaver.conf" do
-    mode "0644"
-    source "beaver-upstart-conf.erb"
+  template '/etc/init/logstash_beaver.conf' do
+    mode '0644'
+    source 'logstash_beaver.conf.erb'
     variables(
-              :cmd => cmd,
-              :group => node['beaver']['group'],
-              :user => node['beaver']['user'],
-              :log => log_file,
-              :supports_setuid => supports_setuid
+              cmd: cmd,
+              group: node['logstash']['supervisor_gid'],
+              user: node['logstash']['user'],
+              log: log_file,
+              supports_setuid: supports_setuid
               )
-    notifies :restart, "service[beaver]"
+    notifies :restart, 'service[logstash_beaver]'
   end
 
-  service "beaver" do
-    supports :restart => true, :reload => false
+  service 'logstash_beaver' do
+    supports restart: true, reload: false
     action [:enable, :start]
     provider Chef::Provider::Service::Upstart
   end
 else
-  template "/etc/init.d/beaver" do
-    mode "0755"
-    source "init-beaver.erb"
+  template '/etc/init.d/logstash_beaver' do
+    mode '0755'
+    source 'init-beaver.erb'
     variables(
-              :cmd => cmd,
-              :pid_file => pid_file,
-              :user => node['beaver']['user'],
-              :log => log_file,
-              :platform => node['platform']
+              cmd: cmd,
+              pid_file: pid_file,
+              user: node['logstash']['user'],
+              log: log_file,
+              platform: node['platform']
               )
-    notifies :restart, "service[beaver]"
+    notifies :restart, 'service[logstash_beaver]'
   end
-  
-  service "beaver" do
-    supports :restart => true, :reload => false, :status => true
+
+  service 'logstash_beaver' do
+    supports restart: true, reload: false, status: true
     action [:enable, :start]
   end
 end
 
-logrotate_app "beaver" do
-  cookbook "logrotate"
+logrotate_app 'logstash_beaver' do
+  cookbook 'logrotate'
   path log_file
-  frequency "daily"
-  postrotate "invoke-rc.d beaver force-reload >/dev/null 2>&1 || true"
-  options [ "missingok", "notifempty" ]
+  frequency 'daily'
+  postrotate node['logstash']['beaver']['logrotate']['postrotate']
+  options node['logstash']['beaver']['logrotate']['options']
   rotate 30
-  create "0440 #{node['beaver']['user']} #{node['beaver']['group']}"
+  create "0640 #{node['logstash']['user']} #{node['logstash']['group']}"
 end
