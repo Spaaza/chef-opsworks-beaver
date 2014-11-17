@@ -135,7 +135,7 @@ when 'debian'
 end
 
 if use_upstart
-  template '/etc/init/logstash_beaver.conf' do
+  template '/etc/init/beaver.conf' do
     mode '0644'
     source 'logstash_beaver.conf.erb'
     variables(
@@ -145,16 +145,16 @@ if use_upstart
               log: log_file,
               supports_setuid: supports_setuid
               )
-    notifies :restart, 'service[logstash_beaver]'
+    notifies :restart, 'service[beaver]'
   end
 
-  service 'logstash_beaver' do
+  service 'beaver' do
     supports restart: true, reload: false
     action [:enable, :start]
     provider Chef::Provider::Service::Upstart
   end
 else
-  template '/etc/init.d/logstash_beaver' do
+  template '/etc/init.d/beaver' do
     mode '0755'
     source 'init-beaver.erb'
     variables(
@@ -164,16 +164,16 @@ else
               log: log_file,
               platform: node['platform']
               )
-    notifies :restart, 'service[logstash_beaver]'
+    notifies :restart, 'service[beaver]'
   end
 
-  service 'logstash_beaver' do
+  service 'beaver' do
     supports restart: true, reload: false, status: true
     action [:enable, :start]
   end
 end
 
-logrotate_app 'logstash_beaver' do
+logrotate_app 'beaver' do
   cookbook 'logrotate'
   path log_file
   frequency 'daily'
