@@ -87,6 +87,7 @@ end
 # outputs
 outputs = []
 conf = {}
+conf['logstash_version'] = 1
 node['beaver']['outputs'].each do |outs|
   outs.each do |name, hash|
     case name
