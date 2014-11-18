@@ -137,7 +137,7 @@ end
 if use_upstart
   template '/etc/init/beaver.conf' do
     mode '0644'
-    source 'logstash_beaver.conf.erb'
+    source 'beaver-upstart-conf.erb'
     variables(
               cmd: cmd,
               group: node['beaver']['group'],
